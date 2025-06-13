@@ -1,0 +1,546 @@
+/* EndryoStyles.css - Tema de Tons Frios Aprimorado */
+
+/* -------------------- RESET BÁSICO -------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* -------------------- VARIÁVEIS DE CORES (TEMA FRIO) -------------------- */
+:root {
+    --primary-blue: #0A192F;    /* Azul escuro principal para o fundo (quase preto) */
+    --secondary-blue: #172A45;  /* Azul médio para cards/contêineres */
+    --accent-blue: #2A66C6;     /* Azul vibrante para botões primários/destaques */
+    --accent-purple: #8B5CF6;   /* Roxo para destaque secundário/hover */
+    --light-green: #6EE7B7;     /* Verde água/turquesa claro para texto principal/sucesso */
+    --text-light: #E2E8F0;      /* Texto claro para fundos escuros */
+    --text-medium: #A0AEC0;     /* Texto cinza azulado para detalhes */
+    --border-dark: #374151;     /* Borda escura suave */
+    --shadow-deep: rgba(0, 0, 0, 0.5); /* Sombra mais profunda */
+    --error-red: #EF4444;       /* Vermelho para erros */
+    --success-green: #10B981;   /* Verde para sucesso */
+}
+
+/* -------------------- ESTILOS GERAIS DO CORPO -------------------- */
+body {
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-blue); /* Fundo azul escuro */
+    margin: 0;
+    padding: 25px; /* Mais padding para o corpo */
+    color: var(--text-light); /* Texto claro por padrão */
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* -------------------- CONTAINER PRINCIPAL -------------------- */
+.container {
+    max-width: 950px; /* Levemente mais largo */
+    width: 95%;
+    margin: 20px auto;
+    padding: 35px; /* Mais padding interno */
+    background-color: var(--secondary-blue); /* Fundo do container azul médio */
+    border-radius: 15px; /* Mais arredondado */
+    box-shadow: 0 10px 30px var(--shadow-deep); /* Sombra mais expressiva */
+    transition: all 0.4s ease-in-out;
+    animation: fadeIn 1s ease-out;
+}
+
+.container:hover {
+    box-shadow: 0 15px 40px var(--shadow-deep), 0 0 12px var(--accent-blue); /* Sombra e brilho azul no hover */
+}
+
+/* -------------------- TÍTULOS -------------------- */
+h2, h3 {
+    color: var(--light-green); /* Títulos em verde água/turquesa */
+    text-align: center;
+    margin-bottom: 30px; /* Mais espaço abaixo */
+    position: relative;
+    padding-bottom: 15px; /* Mais espaço para o underline */
+    font-weight: 700;
+    letter-spacing: 1.2px; /* Mais espaçamento para títulos */
+    animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* Curva de animação mais suave */
+}
+
+h2::after, h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px; /* Mais largo */
+    height: 5px; /* Mais espesso */
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); /* Gradiente azul-roxo */
+    border-radius: 5px;
+}
+
+/* -------------------- FORMULÁRIOS -------------------- */
+form {
+    background-color: var(--primary-blue); /* Fundo do formulário azul escuro */
+    padding: 35px; /* Mais padding */
+    border-radius: 12px;
+    box-shadow: 0 6px 20px var(--shadow-deep);
+    margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px; /* Mais espaço entre campos */
+}
+
+@media (min-width: 768px) {
+    form.grid-form {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px; /* Mais espaço em telas maiores */
+    }
+    form.grid-form .full-width {
+        grid-column: 1 / -1;
+    }
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px; /* Mais espaço para a label */
+    font-weight: 600;
+    color: var(--light-green); /* Labels em verde água */
+    font-size: 1em; /* Levemente maior */
+    transition: color 0.3s ease;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 14px 12px; /* Mais padding */
+    border: 1px solid var(--border-dark);
+    border-radius: 8px; /* Mais arredondado */
+    font-size: 1.05em; /* Levemente maior */
+    color: var(--text-light);
+    background-color: #172A45; /* Fundo do input (secondary-blue) */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--light-green); /* Borda verde água no foco */
+    box-shadow: 0 0 10px rgba(110, 231, 183, 0.4); /* Sombra verde água no foco */
+    outline: none;
+    background-color: #243B55; /* Fundo do input levemente mais claro no foco */
+}
+
+.form-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px; /* Mais espaço entre os botões */
+    margin-top: 20px; /* Mais espaço acima dos botões */
+}
+
+/* -------------------- BOTÕES -------------------- */
+button, .btn-search, .btn-back, .btn-delete {
+    padding: 14px 28px; /* Mais padding */
+    border: none;
+    border-radius: 10px; /* Mais arredondado */
+    cursor: pointer;
+    font-size: 1.15em; /* Levemente maior */
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; /* Animação de pop mais pronunciada */
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+/* Botões Primários (Salvar, Cadastrar, Buscar) */
+button[type="submit"], .btn-search {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); /* Gradiente azul-roxo */
+    color: var(--text-light);
+}
+
+button[type="submit"]:hover, .btn-search:hover {
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); /* Inverte o gradiente no hover */
+    transform: translateY(-5px) scale(1.02); /* Levanta mais e cresce um pouco */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Botão Voltar */
+.btn-back {
+    background: linear-gradient(90deg, var(--secondary-blue), #3b506d); /* Tons de azul mais escuros */
+    color: var(--text-light);
+}
+.btn-back:hover {
+    background: linear-gradient(90deg, #3b506d, var(--secondary-blue));
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Botão Limpar/Cancelar */
+button[type="reset"] {
+    background: linear-gradient(90deg, #5C677D, #7F8DAA); /* Cinzas azulados */
+    color: var(--text-light);
+}
+button[type="reset"]:hover {
+    background: linear-gradient(90deg, #7F8DAA, #5C677D);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+button:active, .btn-search:active, .btn-back:active, .btn-delete:active {
+    transform: translateY(0); /* Retorna na ativação */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Botão de Excluir (vermelho) */
+.btn-delete {
+    background: linear-gradient(90deg, var(--error-red), #DC2626); /* Gradiente vermelho */
+    color: var(--text-light);
+    padding: 12px 24px; /* Ajuste para não ser tão grande quanto os principais */
+    font-size: 1.05em;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(90deg, #DC2626, var(--error-red));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* -------------------- TABELAS -------------------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px; /* Mais espaço acima da tabela */
+    box-shadow: 0 8px 25px var(--shadow-deep);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: fadeIn 1.2s ease-out;
+}
+
+table thead tr {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); /* Gradiente azul-roxo no cabeçalho */
+    color: var(--text-light);
+    text-align: left;
+}
+
+table th, table td {
+    padding: 18px 25px; /* Mais padding */
+    border-bottom: 1px solid var(--border-dark);
+    text-align: left;
+    color: var(--text-light);
+}
+
+table tbody tr {
+    background-color: var(--primary-blue); /* Fundo das linhas */
+}
+
+table tbody tr:nth-of-type(even) {
+    background-color: #122138; /* Fundo alternado um pouco mais escuro */
+}
+
+table tbody tr:hover {
+    background-color: #243B55; /* Fundo mais claro no hover (azul médio) */
+    color: var(--light-green); /* Texto verde água no hover */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+table a {
+    color: var(--light-green); /* Cor dos links na tabela (verde água) */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+table a:hover {
+    color: var(--accent-purple); /* Muda cor para roxo no hover */
+    text-decoration: underline;
+}
+
+/* -------------------- MENSAGENS E ALERTAS -------------------- */
+.message {
+    padding: 18px; /* Mais padding */
+    margin-bottom: 25px;
+    border-radius: 10px;
+    font-size: 1.15em;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.8s ease-in;
+}
+
+.message.success {
+    background-color: rgba(16, 185, 129, 0.2); /* Verde sucesso transparente */
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+.message.error {
+    background-color: rgba(239, 68, 68, 0.2); /* Vermelho erro transparente */
+    color: var(--error-red);
+    border: 1px solid var(--error-red);
+}
+
+.no-results {
+    font-style: italic;
+    padding: 25px;
+    background-color: var(--primary-blue); /* Fundo escuro para "nenhum resultado" */
+    border-radius: 8px;
+    animation: fadeIn 1s ease-in;
+    text-align: center;
+    color: var(--text-medium); /* Texto médio para "nenhum resultado" */
+    margin-top: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* -------------------- ANIMAÇÕES -------------------- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); } /* Começa mais abaixo */
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px); /* Começa mais acima */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.7) translateY(20px); /* Começa menor e mais abaixo */
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* -------------------- RESPONSIVIDADE (MOBILE FIRST) -------------------- */
+@media (max-width: 767px) {
+    body {
+        padding: 15px;
+    }
+    .container {
+        padding: 20px;
+        margin: 10px auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    h2, h3 {
+        font-size: 1.4em;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        letter-spacing: 0.8px;
+    }
+    h2::after, h3::after {
+        width: 100px;
+        height: 4px;
+    }
+
+    form {
+        padding: 20px;
+        gap: 12px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    select {
+        padding: 12px 10px;
+        font-size: 1em;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    button, .btn-search, .btn-back, .btn-delete {
+        width: 100%;
+        margin: 0;
+        padding: 14px;
+        font-size: 1em;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    .btn-delete {
+        padding: 12px;
+        font-size: 0.95em;
+    }
+
+    /* Responsividade para Tabelas em Mobile (Transforma em "cards") */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr {
+        border: 1px solid var(--border-dark);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        background-color: var(--secondary-blue); /* Fundo do card da linha */
+    }
+
+    td {
+        border: none;
+        position: relative;
+        padding-left: 55%; /* Mais espaço para o "rótulo" */
+        text-align: right;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        word-wrap: break-word;
+        color: var(--text-light); /* Texto das células em mobile */
+        font-size: 0.95em;
+    }
+
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px; /* Mais afastado da borda */
+        width: 40%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: var(--light-green); /* Rótulo em verde água */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    td:last-child {
+        text-align: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 12px; /* Mais espaço entre os botões de ação */
+        flex-wrap: wrap;
+        background-color: var(--primary-blue); /* Fundo da área de ações no card */
+        border-top: 1px solid var(--border-dark);
+    }
+}
+
+/* -------------------- CABEÇALHO (HEADER) -------------------- */
+.main-header {
+    background-color: var(--primary-blue); /* Fundo do cabeçalho */
+    padding: 20px 0; /* Mais padding vertical */
+    border-bottom: 3px solid var(--accent-blue); /* Linha azul na parte inferior */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Sombra para o cabeçalho */
+    width: 100%;
+    margin-bottom: 30px; /* Espaço entre o cabeçalho e o container */
+    animation: slideDown 0.8s ease-out forwards;
+    position: sticky; /* Cabeçalho fixo no topo ao rolar */
+    top: 0;
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+}
+
+.header-content {
+    max-width: 950px; /* Alinha com a largura do container */
+    margin: 0 auto;
+    padding: 0 25px; /* Padding lateral */
+    display: flex;
+    justify-content: space-between; /* Espaço entre título e navegação */
+    align-items: center;
+    flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
+}
+
+.main-header h1 {
+    color: var(--light-green); /* Cor do seu nome */
+    font-size: 2.2em; /* Tamanho do nome */
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra no texto */
+    transition: color 0.3s ease;
+}
+
+.main-header h1:hover {
+    color: var(--accent-purple); /* Mudar cor no hover */
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px; /* Espaço entre os itens do menu */
+}
+
+.main-nav a {
+    color: var(--text-medium); /* Cor dos links do menu */
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1em;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover,
+.main-nav a.active { /* Adicione a classe 'active' ao link da página atual se quiser destaque */
+    background-color: var(--secondary-blue);
+    color: var(--light-green);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Animação para o cabeçalho */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajustes de responsividade para o cabeçalho */
+@media (max-width: 767px) {
+    .main-header {
+        padding: 15px 0;
+        margin-bottom: 20px;
+    }
+    .header-content {
+        flex-direction: column; /* Empilha o título e a navegação */
+        text-align: center;
+        gap: 15px; /* Espaço entre título e menu */
+    }
+    .main-header h1 {
+        font-size: 1.8em;
+    }
+    .main-nav ul {
+        flex-direction: column; /* Empilha os itens do menu */
+        gap: 10px;
+        width: 100%;
+    }
+    .main-nav a {
+        padding: 10px;
+        font-size: 1em;
+        width: 100%; /* Links ocupam a largura total em mobile */
+    }
+}

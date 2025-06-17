@@ -46,3 +46,11 @@ Para: maria@empresa.com
 Olá! Sua nova senha temporária é: EorPbgTa
 
 ----------------------
+Para: admin@admin
+Olá! Sua nova senha temporária é: SHnkMOFA
+
+----------------------
+Para: admin@admin
+Olá! Sua nova senha temporária é: M1ucHKIv
+
+----------------------

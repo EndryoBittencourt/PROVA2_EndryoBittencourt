@@ -22,15 +22,16 @@
             echo "<script>alert ('Escolha uma senha diferente de temporaria!');</script>";
         } else {
             $senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-            // atualiza a senha e remove o status de temporaria 
+            // atualiza a senha e remove o status de temporaria
             $sql = "UPDATE usuario SET senha = :senha, senha_temporaria = FALSE WHERE id_usuario = :id";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':senha', $senha_hash);
             $stmt->bindParam(':id', $id_usuario);
 
             if ($stmt->execute()) {
-                session_destroy(); // finaliza a sessao
-                echo "<script>alert ('Senha alterada com sucesso! Faça login novamente);window.location.href='login.php';</script>";
+                // REMOVA OU COMENTE A LINHA ABAIXO:
+                // session_destroy(); // finaliza a sessao
+                echo "<script>alert ('Senha alterada com sucesso! Faça login novamente.');window.location.href='login.php';</script>";
             } else {
                 echo "<script>alert ('Erro ao alterar a senha!');</script>";
             }

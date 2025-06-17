@@ -27,26 +27,31 @@ body {
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--primary-blue); /* Fundo azul escuro */
     margin: 0;
-    padding: 25px; /* Mais padding para o corpo */
+    padding: 0; /* Remover padding do body */
     color: var(--text-light); /* Texto claro por padrão */
     line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+    display: flex; /* Habilita flexbox */
+    flex-direction: column; /* Organiza os itens em coluna */
+    min-height: 100vh; /* Garante que o corpo ocupe a altura total da viewport */
 }
 
-/* -------------------- CONTAINER PRINCIPAL -------------------- */
+/* -------------------- ESTILOS DO CABEÇALHO (REMOVIDOS/AJUSTADOS) -------------------- */
+/* As classes .main-header, .header-content, .site-author,
+   e estilos específicos de h1 e nav dentro de .main-header
+   foram removidos/ajustados pois o cabeçalho foi retirado.
+   Se você reintroduzir um cabeçalho, precisará redefinir seus estilos. */
+
+/* Ajustar o container para levar em conta a ausência do cabeçalho */
 .container {
     max-width: 950px; /* Levemente mais largo */
     width: 95%;
-    margin: 20px auto;
+    margin: 50px auto; /* Centraliza horizontalmente e adiciona margem vertical para compensar a falta do header */
     padding: 35px; /* Mais padding interno */
     background-color: var(--secondary-blue); /* Fundo do container azul médio */
     border-radius: 15px; /* Mais arredondado */
     box-shadow: 0 10px 30px var(--shadow-deep); /* Sombra mais expressiva */
     transition: all 0.4s ease-in-out;
-    animation: fadeIn 1s ease-out;
+    flex-grow: 1; /* Permite que o container ocupe o espaço restante */
 }
 
 .container:hover {
@@ -197,7 +202,7 @@ button[type="reset"]:hover {
 
 button:active, .btn-search:active, .btn-back:active, .btn-delete:active {
     transform: translateY(0); /* Retorna na ativação */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box_shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Botão de Excluir (vermelho) */
@@ -340,7 +345,7 @@ table a:hover {
         border-radius: 10px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
-    
+
     h2, h3 {
         font-size: 1.4em;
         margin-bottom: 20px;
@@ -356,7 +361,11 @@ table a:hover {
         padding: 20px;
         gap: 12px;
     }
-    
+
+    form label {
+        font-size: 0.9em; /* Levemente menor no mobile */
+    }
+
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -365,7 +374,7 @@ table a:hover {
         padding: 12px 10px;
         font-size: 1em;
     }
-    
+
     .form-buttons {
         flex-direction: column;
         align-items: stretch;
@@ -439,108 +448,5 @@ table a:hover {
         flex-wrap: wrap;
         background-color: var(--primary-blue); /* Fundo da área de ações no card */
         border-top: 1px solid var(--border-dark);
-    }
-}
-
-/* -------------------- CABEÇALHO (HEADER) -------------------- */
-.main-header {
-    background-color: var(--primary-blue); /* Fundo do cabeçalho */
-    padding: 20px 0; /* Mais padding vertical */
-    border-bottom: 3px solid var(--accent-blue); /* Linha azul na parte inferior */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Sombra para o cabeçalho */
-    width: 100%;
-    margin-bottom: 30px; /* Espaço entre o cabeçalho e o container */
-    animation: slideDown 0.8s ease-out forwards;
-    position: sticky; /* Cabeçalho fixo no topo ao rolar */
-    top: 0;
-    z-index: 1000; /* Garante que fique acima de outros elementos */
-}
-
-.header-content {
-    max-width: 950px; /* Alinha com a largura do container */
-    margin: 0 auto;
-    padding: 0 25px; /* Padding lateral */
-    display: flex;
-    justify-content: space-between; /* Espaço entre título e navegação */
-    align-items: center;
-    flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
-}
-
-.main-header h1 {
-    color: var(--light-green); /* Cor do seu nome */
-    font-size: 2.2em; /* Tamanho do nome */
-    margin: 0;
-    padding: 0;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra no texto */
-    transition: color 0.3s ease;
-}
-
-.main-header h1:hover {
-    color: var(--accent-purple); /* Mudar cor no hover */
-}
-
-.main-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 25px; /* Espaço entre os itens do menu */
-}
-
-.main-nav a {
-    color: var(--text-medium); /* Cor dos links do menu */
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.1em;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-
-.main-nav a:hover,
-.main-nav a.active { /* Adicione a classe 'active' ao link da página atual se quiser destaque */
-    background-color: var(--secondary-blue);
-    color: var(--light-green);
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Animação para o cabeçalho */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Ajustes de responsividade para o cabeçalho */
-@media (max-width: 767px) {
-    .main-header {
-        padding: 15px 0;
-        margin-bottom: 20px;
-    }
-    .header-content {
-        flex-direction: column; /* Empilha o título e a navegação */
-        text-align: center;
-        gap: 15px; /* Espaço entre título e menu */
-    }
-    .main-header h1 {
-        font-size: 1.8em;
-    }
-    .main-nav ul {
-        flex-direction: column; /* Empilha os itens do menu */
-        gap: 10px;
-        width: 100%;
-    }
-    .main-nav a {
-        padding: 10px;
-        font-size: 1em;
-        width: 100%; /* Links ocupam a largura total em mobile */
     }
 }

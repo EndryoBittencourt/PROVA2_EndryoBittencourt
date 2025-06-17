@@ -9,152 +9,176 @@ if (!isset($_SESSION['perfil']) || ($_SESSION['perfil'] != 1 && $_SESSION['perfi
 }
 
 $cliente = null;
-$clientes = [];
+$clientes_lista = []; // Renomeado para evitar conflito com $cliente
 
-// Busca todos os clientes para a barra de pesquisa
-$sql_all = "SELECT * FROM cliente ORDER BY nome_cliente ASC";
+// Busca todos os clientes para exibir na lista
+$sql_all = "SELECT id_cliente, nome_cliente, email, telefone, endereco FROM cliente ORDER BY nome_cliente ASC";
 $stmt_all = $pdo->prepare($sql_all);
 $stmt_all->execute();
-$clientes = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
+$clientes_lista = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
 
-// Se receber ID via GET, busca o cliente específico
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+// Se a requisição for AJAX para buscar um cliente específico para edição
+if (isset($_GET['action']) && $_GET['action'] == 'get_cliente_data' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id = $_GET['id'];
-    $sql = "SELECT * FROM cliente WHERE id_cliente = :id";
+    $sql = "SELECT id_cliente, nome_cliente, endereco, telefone, email FROM cliente WHERE id_cliente = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
-    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+    $cliente_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    echo json_encode($cliente_data);
+    exit(); // Termina o script após enviar os dados JSON
 }
 
 // Processa o formulário de alteração
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['busca'])) {
+    // Verifica se é uma busca ou uma alteração
+    if (isset($_POST['busca_termo'])) {
         // Processa a busca
-        $busca = trim($_POST['busca']);
-        if (is_numeric($busca)) {
-            $sql = "SELECT * FROM cliente WHERE id_cliente = :busca ORDER BY nome_cliente ASC";
+        $termoBusca = trim($_POST['busca_termo']);
+        $clientes_lista = []; // Reseta a lista para exibir apenas os resultados da busca
+
+        if (is_numeric($termoBusca)) {
+            $sql = "SELECT id_cliente, nome_cliente, email, telefone, endereco FROM cliente WHERE id_cliente = :busca ORDER BY nome_cliente ASC";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
+            $stmt->bindParam(':busca', $termoBusca, PDO::PARAM_INT);
         } else {
-            $sql = "SELECT * FROM cliente WHERE nome_cliente LIKE :busca_nome ORDER BY nome_cliente ASC";
+            $sql = "SELECT id_cliente, nome_cliente, email, telefone, endereco FROM cliente WHERE nome_cliente LIKE :busca_nome ORDER BY nome_cliente ASC";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':busca_nome', "%$busca%", PDO::PARAM_STR);
+            $stmt->bindValue(':busca_nome', "%$termoBusca%", PDO::PARAM_STR);
         }
         $stmt->execute();
-        $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $clientes_lista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     } else {
-        // Processa a atualização do cliente
-        $id = $_POST['id_cliente'];
-        $nome = $_POST['nome_cliente'];
-        $endereco = $_POST['endereco'];
-        $telefone = $_POST['telefone'];
-        $email = $_POST['email'];
+        // Processa a alteração de dados do cliente
+        $id = $_POST['id_cliente'] ?? '';
+        $nome = $_POST['nome_cliente'] ?? '';
+        $endereco = $_POST['endereco'] ?? '';
+        $telefone = $_POST['telefone'] ?? '';
+        $email = $_POST['email'] ?? '';
 
         // VALIDAÇÃO SERVER-SIDE: Remover números do nome antes de salvar
         $nome = preg_replace('/[0-9]+/', '', $nome);
 
-        $sql = "UPDATE cliente SET nome_cliente = :nome, endereco = :endereco, 
-                telefone = :telefone, email = :email WHERE id_cliente = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':endereco', $endereco);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':email', $email);
-
-        if ($stmt->execute()) {
-            echo "<script>alert('Cliente atualizado com sucesso!'); window.location.href='buscar_cliente.php';</script>";
+        if (empty($id) || empty($nome) || empty($email)) {
+            echo "<script>alert('ID, Nome e email são obrigatórios!');</script>";
         } else {
-            echo "<script>alert('Erro ao atualizar cliente!');</script>";
+            $sql = "UPDATE cliente SET nome_cliente = :nome, endereco = :endereco, telefone = :telefone, email = :email WHERE id_cliente = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':nome', $nome);
+            $stmt->bindParam(':endereco', $endereco);
+            $stmt->bindParam(':telefone', $telefone);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                echo "<script>alert('Cliente atualizado com sucesso!'); window.location.href='alterar_cliente.php';</script>";
+            } else {
+                echo "<script>alert('Erro ao atualizar cliente.');</script>";
+            }
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Alterar Cliente</title>
-    <link rel="stylesheet" href="EndryoStyles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar Cliente - Sistema de Gerenciamento</title>
+    <link rel="stylesheet" href="Endryostyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
-    <?php include 'header.php'; ?>
-    <div class="container"> <h2>Alterar Cliente</h2>
-        
-        <form action="alterar_cliente.php" method="POST" class="search-form">
-            <div>
-                <label for="busca">Pesquisar Cliente (ID ou Nome):</label>
-                <input type="text" id="busca" name="busca">
-            </div>
-            <div class="form-buttons">
-                <button type="submit" class="btn-search">Buscar</button>
-            </div>
-        </form>
-        
-        <?php if (!empty($clientes)): ?>
-            <table class="styled-table"> <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($clientes as $c): ?>
-                        <tr>
-                            <td data-label="ID"><?= htmlspecialchars($c['id_cliente']) ?></td>
-                            <td data-label="Nome"><?= htmlspecialchars($c['nome_cliente']) ?></td>
-                            <td data-label="Ação"><a href="alterar_cliente.php?id=<?= $c['id_cliente'] ?>">Selecionar</a></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
-        
-        <?php if ($cliente): ?>
-            <h3>Editar Cliente</h3>
-            <form action="alterar_cliente.php" method="POST" class="grid-form"> <input type="hidden" name="id_cliente" value="<?= $cliente['id_cliente'] ?>">
-                
-                <div>
-                    <label for="nome_cliente">Nome:</label>
-                    <input type="text" id="nome_cliente" name="nome_cliente" value="<?= htmlspecialchars($cliente['nome_cliente']) ?>" required>
-                </div>
-                
-                <div class="full-width"> <label for="endereco">Endereço:</label>
-                    <input type="text" id="endereco" name="endereco" value="<?= htmlspecialchars($cliente['endereco']) ?>">
-                </div>
-                
-                <div>
-                    <label for="telefone">Telefone:</label>
-                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($cliente['telefone']) ?>">
-                </div>
-                
-                <div>
-                    <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($cliente['email']) ?>" required>
-                </div>
-                
-                <div class="form-buttons"> <button type="submit">Salvar</button>
-                    <button type="reset">Cancelar</button>
+    <div class="container">
+        <h2>Alterar Cliente</h2>
+
+        <div id="client-list-section">
+            <form id="search-form" action="alterar_cliente.php" method="post" class="grid-form">
+                <div class="full-width">
+                    <label for="busca_cliente">Buscar Cliente (ID ou Nome):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="busca_cliente" name="busca_termo" placeholder="Digite ID ou Nome do cliente">
+                        <button type="submit" class="btn-search">Buscar</button>
+                    </div>
                 </div>
             </form>
-        <?php elseif (isset($_GET['id'])): ?>
-            <p class="no-results">Cliente não encontrado.</p> <?php endif; ?>
-        <a href="principal.php" class="btn-back">Voltar</a>
+
+            <?php if (!empty($clientes_lista)): ?>
+                <table class="styled-table" id="clients-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Telefone</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($clientes_lista as $cliente_item): ?>
+                            <tr>
+                                <td data-label="ID"><?= htmlspecialchars($cliente_item['id_cliente']) ?></td>
+                                <td data-label="Nome"><?= htmlspecialchars($cliente_item['nome_cliente']) ?></td>
+                                <td data-label="E-mail"><?= htmlspecialchars($cliente_item['email']) ?></td>
+                                <td data-label="Telefone"><?= htmlspecialchars($cliente_item['telefone']) ?></td>
+                                <td data-label="Ações">
+                                    <a href="#" class="btn-alterar-item" data-id="<?= $cliente_item['id_cliente'] ?>">Alterar</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p class="no-results">Nenhum cliente encontrado.</p>
+            <?php endif; ?>
+        </div>
+
+        <div id="edit-client-section" style="display: none;">
+            <h3>Editar Cliente</h3>
+            <form action="alterar_cliente.php" method="post" class="grid-form">
+                <input type="hidden" name="id_cliente" id="edit_id_cliente">
+
+                <div>
+                    <label for="edit_nome_cliente">Nome:</label>
+                    <input type="text" id="edit_nome_cliente" name="nome_cliente" required>
+                </div>
+
+                <div class="full-width">
+                    <label for="edit_endereco">Endereço:</label>
+                    <input type="text" id="edit_endereco" name="endereco">
+                </div>
+
+                <div>
+                    <label for="edit_telefone">Telefone:</label>
+                    <input type="text" id="edit_telefone" name="telefone">
+                </div>
+
+                <div>
+                    <label for="edit_email">E-mail:</label>
+                    <input type="email" id="edit_email" name="email" required>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit">Salvar Alterações</button>
+                    <button type="button" id="btn-cancel-edit" class="btn-back">Voltar para Lista</button>
+                </div>
+            </form>
+        </div>
+        <a href="principal.php" class="btn-back" id="main-back-button">Voltar ao Início</a>
     </div>
 
     <script>
     $(document).ready(function(){
-        $('#telefone').mask('(00) 00000-0000');
-        $('#email').on('input', function() {
+        // Máscara de telefone
+        $('#edit_telefone').mask('(00) 00000-0000');
+
+        // Normalização de input para nome e email (edição)
+        $('#edit_email').on('input', function() {
             $(this).val($(this).val().toLowerCase());
         });
-        $('#nome_cliente').on('input', function() {
+        $('#edit_nome_cliente').on('input', function() {
             var inputVal = $(this).val();
             inputVal = inputVal.replace(/[0-9]/g, '');
             if (inputVal.length > 0) {
@@ -162,6 +186,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $(this).val('');
             }
+        });
+
+        // Manipula o clique no botão "Alterar" da tabela
+        $('#clients-table').on('click', '.btn-alterar-item', function(e) {
+            e.preventDefault();
+            var clientId = $(this).data('id');
+
+            // Esconde a seção da lista de clientes
+            $('#client-list-section').hide();
+            // Esconde o botão "Voltar ao Início" principal
+            $('#main-back-button').hide();
+
+            // Faz a requisição AJAX para obter os dados do cliente
+            $.ajax({
+                url: 'alterar_cliente.php',
+                type: 'GET',
+                data: { action: 'get_cliente_data', id: clientId },
+                dataType: 'json',
+                success: function(data) {
+                    if (data) {
+                        // Preenche o formulário com os dados recebidos
+                        $('#edit_id_cliente').val(data.id_cliente);
+                        $('#edit_nome_cliente').val(data.nome_cliente);
+                        $('#edit_endereco').val(data.endereco);
+                        $('#edit_telefone').val(data.telefone);
+                        $('#edit_email').val(data.email);
+
+                        // Mostra a seção de edição
+                        $('#edit-client-section').fadeIn(500);
+                    } else {
+                        alert('Dados do cliente não encontrados.');
+                        // Volta para a lista se não encontrar dados
+                        $('#client-list-section').fadeIn(500);
+                        $('#main-back-button').show();
+                    }
+                },
+                error: function() {
+                    alert('Erro ao carregar dados do cliente.');
+                    // Volta para a lista em caso de erro
+                    $('#client-list-section').fadeIn(500);
+                    $('#main-back-button').show();
+                }
+            });
+        });
+
+        // Manipula o clique no botão "Voltar para Lista" no formulário de edição
+        $('#btn-cancel-edit').on('click', function() {
+            // Esconde a seção de edição
+            $('#edit-client-section').hide();
+            // Mostra a seção da lista de clientes
+            $('#client-list-section').fadeIn(500);
+            // Mostra o botão "Voltar ao Início" principal
+            $('#main-back-button').show();
+            // Limpa o formulário de edição (opcional)
+            $('#edit-client-section form')[0].reset();
         });
     });
     </script>

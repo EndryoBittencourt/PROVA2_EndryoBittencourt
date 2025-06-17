@@ -32,47 +32,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['busca'])) {
     $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Processa a exclusão se receber ID via GET
+// Processa a exclusão
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $id = $_GET['id'];
-    
-    $sql = "DELETE FROM cliente WHERE id_cliente = :id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    
-    if ($stmt->execute()) {
-        echo "<script>alert('Cliente excluído com sucesso!'); window.location.href='excluir_cliente.php';</script>";
+    $id_cliente = $_GET['id'];
+
+    // --- START OF MODIFIED SECTION ---
+    // Commented out the contract check because the 'contrato' table doesn't exist
+    /*
+    $sql_check_associates = "SELECT COUNT(*) FROM contrato WHERE id_cliente = :id_cliente";
+    $stmt_check = $pdo->prepare($sql_check_associates);
+    $stmt_check->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+    $stmt_check->execute();
+    $count_associates = $stmt_check->fetchColumn();
+
+    if ($count_associates > 0) {
+        echo "<script>alert('Não é possível excluir o cliente, pois ele possui contratos associados. Exclua os contratos primeiro.'); window.location.href='excluir_cliente.php';</script>";
     } else {
-        echo "<script>alert('Erro ao excluir cliente!');</script>";
-    }
+        // Original deletion logic if no contracts found
+    */
+        $sql_delete = "DELETE FROM cliente WHERE id_cliente = :id_cliente";
+        $stmt_delete = $pdo->prepare($sql_delete);
+        $stmt_delete->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+
+        if ($stmt_delete->execute()) {
+            echo "<script>alert('Cliente excluído com sucesso!'); window.location.href='excluir_cliente.php';</script>";
+        } else {
+            echo "<script>alert('Erro ao excluir cliente.'); window.location.href='excluir_cliente.php';</script>";
+        }
+    /*
+    } // End of else for $count_associates > 0
+    */
+    // --- END OF MODIFIED SECTION ---
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Excluir Cliente</title>
-    <link rel="stylesheet" href="EndryoStyles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluir Cliente - Sistema de Gerenciamento</title>
+    <link rel="stylesheet" href="Endryostyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
-    <?php include 'header.php'; ?>
     <div class="container">
         <h2>Excluir Cliente</h2>
-        
-        <form action="excluir_cliente.php" method="POST" class="search-form">
-            <div>
-                <label for="busca">Pesquisar Cliente (ID ou Nome):</label>
-                <input type="text" id="busca" name="busca" placeholder="Digite ID ou nome...">
-            </div>
-            <div class="form-buttons">
-                <button type="submit" class="btn-search">Buscar</button>
+
+        <form action="excluir_cliente.php" method="post" class="grid-form">
+            <div class="full-width">
+                <label for="busca">Buscar por ID ou Nome:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="busca" name="busca" placeholder="Digite ID ou Nome do cliente">
+                    <button type="submit" class="btn-search">Buscar</button>
+                </div>
             </div>
         </form>
-        
+
         <?php if (!empty($clientes)): ?>
             <table class="styled-table">
                 <thead>

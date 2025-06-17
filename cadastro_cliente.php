@@ -20,51 +20,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($nome) || empty($email)) {
         echo "<script>alert('Nome e email são obrigatórios!');</script>";
     } else {
-        $sql = "INSERT INTO cliente (nome_cliente, endereco, telefone, email, id_funcionario_responsavel) 
+        $sql = "INSERT INTO cliente (nome_cliente, endereco, telefone, email, id_funcionario_responsavel)
                 VALUES (:nome, :endereco, :telefone, :email, :id_funcionario)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':endereco', $endereco);
         $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':email', $email);
-        
-        $sql_func = "SELECT id_funcionario FROM funcionario WHERE email = :email";
-        $stmt_func = $pdo->prepare($sql_func);
-        $stmt_func->bindParam(':email', $_SESSION['email']);
-        $stmt_func->execute();
-        $funcionario = $stmt_func->fetch(PDO::FETCH_ASSOC);
-
-        $id_funcionario = $funcionario ? $funcionario['id_funcionario'] : null;
-        $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
+        $stmt->bindParam(':id_funcionario', $_SESSION['id_funcionario'], PDO::PARAM_INT); // Assumindo que id_funcionario está na sessão
 
         if ($stmt->execute()) {
-            echo "<script>alert('Cliente cadastrado com sucesso!');</script>";
+            echo "<script>alert('Cliente cadastrado com sucesso!'); window.location.href='cadastro_cliente.php';</script>";
         } else {
-            echo "<script>alert('Erro ao cadastrar cliente!');</script>";
+            echo "<script>alert('Erro ao cadastrar cliente.');</script>";
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastrar Cliente</title>
-    <link rel="stylesheet" href="EndryoStyles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente - Sistema de Gerenciamento</title>
+    <link rel="stylesheet" href="Endryostyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
-    <?php include 'header.php'; ?>
-    <div class="container"> <h2>Cadastrar Cliente</h2>
-        <form action="cadastro_cliente.php" method="POST" class="grid-form"> <div>
+    <div class="container">
+    <h1>Endryo Gabriel Bittencourt</h1>
+        <h2>Cadastro de Cliente</h2>
+        <form action="cadastro_cliente.php" method="post" class="grid-form">
+            <div>
                 <label for="nome_cliente">Nome:</label>
                 <input type="text" id="nome_cliente" name="nome_cliente" required>
             </div>
 
-            <div class="full-width"> <label for="endereco">Endereço:</label>
+            <div class="full-width">
+                <label for="endereco">Endereço:</label>
                 <input type="text" id="endereco" name="endereco">
             </div>
 
@@ -78,7 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="email" id="email" name="email" required>
             </div>
 
-            <div class="form-buttons"> <button type="submit">Cadastrar</button>
+            <div class="form-buttons">
+                <button type="submit">Cadastrar</button>
                 <button type="reset">Limpar</button>
             </div>
         </form>

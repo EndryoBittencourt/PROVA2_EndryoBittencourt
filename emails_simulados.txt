@@ -34,3 +34,15 @@ Para: admin@admin
 Olá! Sua nova senha temporária é: Bi3UFqdg
 
 ----------------------
+Para: admin@admin
+Olá! Sua nova senha temporária é: SIay5RUO
+
+----------------------
+Para: ana@empresa.com
+Olá! Sua nova senha temporária é: uqsDnEG2
+
+----------------------
+Para: maria@empresa.com
+Olá! Sua nova senha temporária é: EorPbgTa
+
+----------------------

@@ -29,35 +29,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['busca'])) {
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':busca_nome', "%$busca%", PDO::PARAM_STR);
     }
-
     $stmt->execute();
     $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Buscar Cliente</title>
-    <link rel="stylesheet" href="EndryoStyles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Cliente - Sistema de Gerenciamento</title>
+    <link rel="stylesheet" href="Endryostyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
-    <?php include 'header.php'; ?>
-    <div class="container"> <h2>Buscar Cliente</h2>
-        <form action="buscar_cliente.php" method="POST" class="search-form"> <div>
-                <label for="busca">Digite o ID ou Nome:</label>
-                <input type="text" id="busca" name="busca">
-            </div>
-            <div class="form-buttons"> <button type="submit" class="btn-search">Buscar</button>
+    <div class="container">
+    <h1>Endryo Gabriel Bittencourt</h1>
+        <h2>Buscar Cliente</h2>
+
+        <form action="buscar_cliente.php" method="post" class="grid-form">
+            <div class="full-width">
+                <label for="busca">Buscar por ID ou Nome:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="busca" name="busca" placeholder="Digite ID ou Nome do cliente">
+                    <button type="submit" class="btn-search">Buscar</button>
+                </div>
             </div>
         </form>
 
         <?php if (!empty($clientes)): ?>
-            <table class="styled-table"> <thead>
+            <table class="styled-table">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nome</th>

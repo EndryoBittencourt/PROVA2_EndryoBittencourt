@@ -31,6 +31,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cliente_data' && isset($_G
 
 // Processa o formulário de alteração
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+$email = $_POST['email'];
+$telefone = $_POST['telefone'];
+
+if (!str_contains($email, '.com')) {
+    echo "<script>alert('O e-mail deve conter .com'); window.history.back();</script>";
+    exit;
+}
+
+if (empty($telefone)) {
+    echo "<script>alert('O telefone é obrigatório'); window.history.back();</script>";
+    exit;
+}
+
     // Verifica se é uma busca ou uma alteração
     if (isset($_POST['busca_termo'])) {
         // Processa a busca
@@ -152,12 +166,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div>
                     <label for="edit_telefone">Telefone:</label>
-                    <input type="text" id="edit_telefone" name="telefone">
+                    <input type="text" id="edit_telefone" name="telefone" required placeholder="(XX) XXXXX-XXXX">
                 </div>
 
                 <div>
                     <label for="edit_email">E-mail:</label>
-                    <input type="email" id="edit_email" name="email" required>
+                    <input type="email" id="edit_email" name="email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$" title="O e-mail deve conter .com" required>
                 </div>
 
                 <div class="form-buttons">

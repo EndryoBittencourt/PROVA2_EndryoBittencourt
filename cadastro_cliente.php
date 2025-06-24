@@ -9,6 +9,20 @@ if (!isset($_SESSION['perfil']) || ($_SESSION['perfil'] != 1 && $_SESSION['perfi
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+$email = $_POST['email'];
+$telefone = $_POST['telefone'];
+
+if (!str_contains($email, '.com')) {
+    echo "<script>alert('O e-mail deve conter .com'); window.history.back();</script>";
+    exit;
+}
+
+if (empty($telefone)) {
+    echo "<script>alert('O telefone é obrigatório'); window.history.back();</script>";
+    exit;
+}
+
     $nome = $_POST['nome_cliente'] ?? '';
     $endereco = $_POST['endereco'] ?? '';
     $telefone = $_POST['telefone'] ?? '';
@@ -64,12 +78,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div>
                 <label for="telefone">Telefone:</label>
-                <input type="text" id="telefone" name="telefone">
+                <input type="text" id="telefone" name="telefone" required placeholder="(XX) XXXXX-XXXX">
             </div>
 
             <div>
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$" title="O e-mail deve conter .com" required>
             </div>
 
             <div class="form-buttons">
